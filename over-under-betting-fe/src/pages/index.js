@@ -2,17 +2,16 @@ import Head from 'next/head'
 import Image from 'next/image'
 import React, {useState} from "react"
 import { Inter } from 'next/font/google'
-import Chart from '@/components/Chart'
 
-// Styles set within global.css currently
+import Chart from '@/components/Chart'
+import ConnectWalletButton from '@/components/ConnectWalletButton'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const Home = ({chart_data}) => {
 
-  console.log("chart_data: ", chart_data);
-  const btc_data = chart_data['btc'];
-  const eth_data = chart_data['eth'];
+const Home = ({server_data}) => {
+  const btc_data = server_data['btc'];
+  const eth_data = server_data['eth'];
 
   return (
     <>
@@ -28,7 +27,9 @@ const Home = ({chart_data}) => {
           <div className="nav-link">BROWSE MARKETS</div>
           <div className="nav-link">DOCS</div>
           <div className="nav-link">ADDITIONAL INFO</div>
-          <div className="connect-wallet-btn">CONNECT WALLET</div>
+          <div className="connect-wallet-btn">
+              <ConnectWalletButton />
+          </div>
         </div>
         <div className="markets-text">MARKETS</div>
         <div className="markets-group">
@@ -38,12 +39,11 @@ const Home = ({chart_data}) => {
           <div className="market-graph-1">
             <Chart data={eth_data} />
           </div>
-          <div className="market-graph-1"></div>
+
         </div>
         <div className="events-text">EVENTS</div>
         <div className="events-group">
           <div className="event-card"></div>
-          <div className="event-card-1"></div>
           <div className="event-card-1"></div>
         </div>
         <div className="social-navbar"></div>
@@ -79,14 +79,13 @@ export const getServerSideProps = async () => {
   });
   const eth_data = eth_res.data;
 
-  const chart_data = {
+  const server_data = {
     btc: btc_data,
-    eth: eth_data
+    eth: eth_data,
   }
 
-  
   return {
-    props: {chart_data}
+    props: {server_data}
   };
 };
 
