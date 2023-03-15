@@ -5,9 +5,6 @@ const Chart = ({ data }) => {
     const svgRef = useRef(null);
     const [mousePosition, setMousePosition] = useState(null);
 
-    const [dataHeight, setDataHeight] = useState(0);
-    const [dataWidth, setDataWidth] = useState(0);
-
     useEffect(() => {
         const svg = d3.select(svgRef.current);
 
