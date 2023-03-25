@@ -3,8 +3,11 @@ import Image from 'next/image'
 import React, {useState} from "react"
 import { Inter } from 'next/font/google'
 
-import Chart from '@/components/Chart'
+import PriceChart from '@/components/PriceChart'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
+import BettingEvent from '@/components/BettingEvent'
+
+import { get_all_hourly_price_data } from '../utils/api_calls/over_under_api_calls'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,17 +37,21 @@ const Home = ({server_data}) => {
         <div className="markets-text">MARKETS</div>
         <div className="markets-group">
           <div className="market-graph">
-            <Chart data={btc_data} />
+            <PriceChart data={btc_data} assetSymbol={"BTC"} />
           </div>
           <div className="market-graph-1">
-            <Chart data={eth_data} />
+            <PriceChart data={eth_data} assetSymbol={"ETH"}/>
           </div>
 
         </div>
         <div className="events-text">EVENTS</div>
         <div className="events-group">
-          <div className="event-card"></div>
-          <div className="event-card-1"></div>
+          <div className="event-card">
+            <BettingEvent />
+          </div>
+          <div className="event-card-1">
+            <BettingEvent />
+          </div>
         </div>
         <div className="social-navbar"></div>
       </div>
@@ -54,34 +61,11 @@ const Home = ({server_data}) => {
 
 // For now just get data for charts
 export const getServerSideProps = async () => {
-  const base_url = process.env.NEXT_PUBLIC_BE_URL;
-
-  const btc_24h_route = "/data/btc/price/24/hour";
-  const btc_url = base_url + btc_24h_route;
-
-  const eth_24h_route = "/data/eth/price/24/hour";
-  const eth_url = base_url + eth_24h_route;
-
-
-  const btc_res = await fetch(btc_url).then((response) => {
-    if (!response.ok) {
-      throw new Error('Network response was not OK');
-    }
-    return response.json();
-  });
-  const btc_data = btc_res.data;
-
-  const eth_res = await fetch(eth_url).then((response) => {
-    if (!response.ok) {
-      throw new Error('Network response was not OK');
-    }
-    return response.json();
-  });
-  const eth_data = eth_res.data;
-
+  const price_data = await get_all_hourly_price_data(24);
+  console.log("server_side: " + price_data)
   const server_data = {
-    btc: btc_data,
-    eth: eth_data,
+    btc: price_data.btc,
+    eth: price_data.eth,
   }
 
   return {

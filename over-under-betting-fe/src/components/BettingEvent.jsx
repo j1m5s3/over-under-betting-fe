@@ -12,9 +12,9 @@ const BettingEvent = ({contract_details}) => {
 
 
   // Address of deployed contract stored in DB
-  const contract_address = contract_details['contract_address'];
+  //const contract_address = contract_details['contract_address'];
   // JSON interface to contract stored in DB
-  const contract_abi = contract_details['contract_address'];
+  //const contract_abi = contract_details['contract_address'];
 
   async function handleClick() {
 

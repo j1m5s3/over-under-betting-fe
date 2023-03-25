@@ -1,9 +1,8 @@
-// src/components/ConnectWalletButton.js
 import { useDispatch, useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 
 import { connectWallet, disconnectWallet } from '@/state/wallet';
-//import { window } from 'd3-selection';
+
 
 const ConnectWalletButton = () => {
   const dispatch = useDispatch();

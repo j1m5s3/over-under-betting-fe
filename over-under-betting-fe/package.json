@@ -10,12 +10,16 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
+    "chart.js": "^4.2.1",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "d3": "^7.8.2",
+    "date-fns": "^2.29.3",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "ethers": "5.7.2",
     "next": "13.2.3",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5"
   }
