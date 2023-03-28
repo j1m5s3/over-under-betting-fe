@@ -7,7 +7,7 @@ import PriceChart from '@/components/PriceChart'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
 import BettingEvent from '@/components/BettingEvent'
 
-import { get_all_hourly_price_data } from '../utils/api_calls/over_under_api_calls'
+import { get_all_hourly_price_data, get_current_six_hour_event_data } from '@/utils/api_calls/over_under_api_calls'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,6 +15,10 @@ const inter = Inter({ subsets: ['latin'] })
 const Home = ({server_data}) => {
   const btc_data = server_data['btc'];
   const eth_data = server_data['eth'];
+  const contract_data = server_data['events'];
+  const provider_url = server_data['provider_url'];
+
+  
 
   return (
     <>
@@ -47,10 +51,10 @@ const Home = ({server_data}) => {
         <div className="events-text">EVENTS</div>
         <div className="events-group">
           <div className="event-card">
-            <BettingEvent />
+            <BettingEvent contract_details={contract_data['BTC']} provider_url={provider_url}/>
           </div>
           <div className="event-card-1">
-            <BettingEvent />
+            <BettingEvent contract_details={contract_data['ETH']} provider_url={provider_url}/>
           </div>
         </div>
         <div className="social-navbar"></div>
@@ -62,10 +66,14 @@ const Home = ({server_data}) => {
 // For now just get data for charts
 export const getServerSideProps = async () => {
   const price_data = await get_all_hourly_price_data(24);
-  console.log("server_side: " + price_data)
+  const contract_data = await get_current_six_hour_event_data();
+  const provider_url = process.env.NEXT_SEPOLIA_URL;
+
   const server_data = {
     btc: price_data.btc,
     eth: price_data.eth,
+    events: contract_data,
+    provider_url: provider_url
   }
 
   return {

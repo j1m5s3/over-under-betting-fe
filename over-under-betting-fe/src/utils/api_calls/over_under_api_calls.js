@@ -29,7 +29,7 @@ export const get_all_hourly_price_data = async (hours) => {
     btc: btc_data,
     eth: eth_data,
   }
-  console.log(price_data)
+
   return price_data;
 }
 
@@ -70,7 +70,7 @@ export const get_live_price_data = async (assetSymbol) => {
 
 export const get_current_six_hour_event_data = async() => {
   const base_url = process.env.NEXT_PUBLIC_BE_URL;
-  const six_hour_event_route = '/current/6hr_events';
+  const six_hour_event_route = '/events/current/6hr_events';
   const live_url = base_url + six_hour_event_route;
 
   const events_data = await fetch(live_url).then((response) => {
@@ -79,8 +79,13 @@ export const get_current_six_hour_event_data = async() => {
     }
     return response.json();
   });
-
   const contract_data = events_data.data;
 
-  return contract_data;
+
+  let contract_data_formatted = {}
+  contract_data.forEach(value => {
+      contract_data_formatted[value.asset_symbol] = value;
+  });
+
+  return contract_data_formatted;
 }

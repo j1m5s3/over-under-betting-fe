@@ -3,6 +3,8 @@ import { ethers } from 'ethers';
 
 import { connectWallet, disconnectWallet } from '@/state/wallet';
 
+import { get_wallet } from '@/utils/eth/wallet_utils';
+
 
 const ConnectWalletButton = () => {
   const dispatch = useDispatch();
@@ -11,25 +13,17 @@ const ConnectWalletButton = () => {
   async function handleClick() {
     
     if (!window.ethereum) {
-      console.log("window: ", window)
       alert('Please install MetaMask to connect your wallet.');
       return;
     }
-
+    console.log("isConnected cwb: " + isConnected);
     if (!isConnected) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const provider_name = provider.connection.url;
-      
-      try {
-        await provider.send("eth_requestAccounts", [])
-      } catch (error) {
-        console.error("Failed to connect to ETH account: ", error);
-        return;
-      }
-      const signer = provider.getSigner();
-      console.log(signer);
+      const wallet = await get_wallet(window.ethereum);
 
-      const address = await signer.getAddress();
+      let provider_name = wallet.provider_name;
+      let signer = wallet.signer;
+      let address = wallet.address;
+      console.log("signer cwb: " + signer);
 
       dispatch(connectWallet({ provider_name, signer, address }));
     }

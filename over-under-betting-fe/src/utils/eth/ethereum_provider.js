@@ -1,24 +1,35 @@
 import { ethers } from 'ethers';
 
-class ETHProvider {
+export class ETHProvider {
 
     constructor(providerUrl) {
         this.provider = new ethers.providers.JsonRpcProvider(providerUrl);
     }
 
-    async getChainId() {
-       const chainId = (await this.provider.getNetwork()).chainId;
-        return chainId;
+    getContract(contractAddress, contractABI, signer = null) {
+
+        if (signer == null) {
+            const contract = new ethers.Contract(contractAddress, contractABI, this.provider);
+            return contract;
+        }
+
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        return contract;
     }
 
-    async getContract(contractAddress, contractABI) {
-        const contract = new ethers.Contract(contractAddress, contractABI);
-        return contract;
+    async getGasPrice() {
+        const gas_price = this.provider.getGasPrice();
+        return gas_price;
+    }
+
+    async getChainId() {
+        const chainId = (await this.provider.getNetwork()).chainId;
+        return chainId;
     }
 }
 
 
-class ContractInterface {
+export class ContractInterface {
     constructor(contract_handle) {
         this.contract_handle = contract_handle;
     }
@@ -52,5 +63,18 @@ class ContractInterface {
     async getContractBalance() {
         const contractBalance = await this.contract_handle.getContractBalance();
         return contractBalance;
+    }
+
+    async makeUnderBet(value, gas_price) {
+        const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 100000});
+
+        return txn_response;
+    }
+
+    async makeOverBet(value, gas_price) {
+        // TODO: Programatically get gas_limit. Optimize gas price estimation
+        const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 100000});
+
+        return txn_response;
     }
 }

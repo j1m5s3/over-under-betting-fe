@@ -5,7 +5,7 @@ import { get_hourly_asset_price_data } from '../utils/api_calls/over_under_api_c
 
 const PriceChart = ({ data, assetSymbol }) => {
   const chart_data = map_chart_record_data(data);
-  const price_chart_title = assetSymbol + " 24HR PRICE";
+  const price_chart_title = assetSymbol + " 24HR PRICE USD";
   let line_color = "rgba(255, 255, 255, 1)";
 
   if (assetSymbol == "BTC") {
@@ -74,9 +74,8 @@ const PriceChart = ({ data, assetSymbol }) => {
         plugins: {
           legend: {
             labels: {
-              color: 'green',  
+              color: 'black',  
               boxHeight: 0,
-
             }
           }
         }
