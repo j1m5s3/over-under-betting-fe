@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { ethers } from 'ethers';
+import { AwesomeButton } from 'react-awesome-button'
+import AwesomeButtonStyles from 'react-awesome-button/src/styles/styles.scss';
 
 import { connectWallet, disconnectWallet } from '@/state/wallet';
 
@@ -33,9 +34,9 @@ const ConnectWalletButton = () => {
   }
 
   return (
-    <button onClick={handleClick}>
+    <AwesomeButton onPress={handleClick}>
       {isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
-    </button>
+    </AwesomeButton>
   );
 }
 

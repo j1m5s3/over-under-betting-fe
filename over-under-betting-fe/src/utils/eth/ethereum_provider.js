@@ -66,15 +66,14 @@ export class ContractInterface {
     }
 
     async makeUnderBet(value, gas_price) {
-        const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 100000});
-
+        // TODO: Programatically get gas_limit. Optimize gas price estimation
+        const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 6000000});
         return txn_response;
     }
 
     async makeOverBet(value, gas_price) {
         // TODO: Programatically get gas_limit. Optimize gas price estimation
-        const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 100000});
-
+        const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 6000000});
         return txn_response;
     }
 }

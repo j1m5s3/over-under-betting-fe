@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethers } from 'ethers';
+import { AwesomeButton } from 'react-awesome-button'
 
 import { get_wallet, get_signer } from '@/utils/eth/wallet_utils';
 import { ETHProvider, ContractInterface } from '@/utils/eth/ethereum_provider';
@@ -8,7 +9,7 @@ import { ETHProvider, ContractInterface } from '@/utils/eth/ethereum_provider';
 import { connectWallet, disconnectWallet } from '@/state/wallet';
 
 
-const BettingEvent = ({contract_details, provider_url}) => {
+const BettingEvent = ({ contract_details, provider_url }) => {
 
   const price_mark = contract_details.price_mark;
   const contract_asset_symbol = contract_details.asset_symbol;
@@ -34,7 +35,7 @@ const BettingEvent = ({contract_details, provider_url}) => {
     console.log("isConnected uf: " + isConnected);
     console.log("walletAddress uf: " + walletAddress);
 
-    if(isConnected) {
+    if (isConnected) {
       const signer = get_signer(window.ethereum);
       console.log("signer uf: " + signer);
       setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
@@ -43,16 +44,16 @@ const BettingEvent = ({contract_details, provider_url}) => {
 
   }, [isConnected]);
 
- /*
-  async function getContractInfo() {
-    const price_mark = await contractInterface.getPriceMark();
-    const name = await contractInterface.getContractName();
-    console.log("contract_info: " + name);
-    console.log("price_mark: " + price_mark);
-
-    
-  }
-  */
+  /*
+   async function getContractInfo() {
+     const price_mark = await contractInterface.getPriceMark();
+     const name = await contractInterface.getContractName();
+     console.log("contract_info: " + name);
+     console.log("price_mark: " + price_mark);
+ 
+     
+   }
+   */
 
   async function handleOverBet() {
     if (!window.ethereum) {
@@ -74,18 +75,36 @@ const BettingEvent = ({contract_details, provider_url}) => {
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeOverBet(value_to_send, gas_price);
     }
-    if(isConnected) {
+    if (isConnected) {
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeOverBet(value_to_send, gas_price);
     }
-
-    console.log("txn_response : " + txn_response);
   }
 
   async function handleUnderBet() {
-    const value_to_send = ethers.utils.parseEther(betValue)
-    const txn_response = await contract_interface.makeUnderBet(value_to_send);
-    console.log("txn_response : " + txn_response);
+    if (!window.ethereum) {
+      console.log("window: ", window)
+      alert('Please install MetaMask to connect your wallet.');
+      return;
+    }
+    const gas_price = await eth_provider.getGasPrice();
+
+    if (!isConnected) {
+      const wallet = await get_wallet(window.ethereum);
+
+      let provider_name = wallet.provider_name;
+      let signer = wallet.signer;
+      let address = wallet.address;
+
+      dispatch(connectWallet({ provider_name, signer, address }));
+
+      const value_to_send = ethers.utils.parseEther(betValue)
+      const txn_response = await contractInterface.makeUnderBet(value_to_send, gas_price);
+    }
+    if (isConnected) {
+      const value_to_send = ethers.utils.parseEther(betValue)
+      const txn_response = await contractInterface.makeUnderBet(value_to_send, gas_price);
+    }
   }
 
   // Address of deployed contract stored in DB
@@ -100,20 +119,16 @@ const BettingEvent = ({contract_details, provider_url}) => {
       <div> Event Close: {event_close}</div>
       <div> Betting Close: {betting_close}</div>
       <div>Price Mark: ${price_mark} USD</div>
+      <div>ASSET SYMBOL: {contract_asset_symbol}</div>
 
       <input type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} />
-      <div>
-        <div>
-          <button onClick={handleOverBet}>
-            Over <div> + </div>
-          </button>
-        </div>
-        <div>
-          <button onClick={handleUnderBet}>
-            Under <div> - </div>
-          </button>
-        </div>
-
+      <div className="event-bet-btn">
+        <AwesomeButton onPress={handleOverBet}>
+          Over <div> + </div>
+        </AwesomeButton>
+        <AwesomeButton onPress={handleUnderBet}>
+          Under <div> - </div>
+        </AwesomeButton>
       </div>
 
     </>

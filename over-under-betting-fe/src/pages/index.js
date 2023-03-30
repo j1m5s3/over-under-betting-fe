@@ -1,24 +1,25 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import React, {useState} from "react"
+import React, { useState } from "react"
 import { Inter } from 'next/font/google'
+import { AwesomeButton } from "react-awesome-button"
+import AwesomeButtonStyles from 'react-awesome-button/src/styles/styles.scss';
 
-import PriceChart from '@/components/PriceChart'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
-import BettingEvent from '@/components/BettingEvent'
+import HomeComponent from '@/components/HomeComponent'
 
 import { get_all_hourly_price_data, get_current_six_hour_event_data } from '@/utils/api_calls/over_under_api_calls'
 
 const inter = Inter({ subsets: ['latin'] })
 
 
-const Home = ({server_data}) => {
+const Home = ({ server_data }) => {
   const btc_data = server_data['btc'];
   const eth_data = server_data['eth'];
   const contract_data = server_data['events'];
   const provider_url = server_data['provider_url'];
 
-  
+
 
   return (
     <>
@@ -29,35 +30,17 @@ const Home = ({server_data}) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="home-container">
+        <div className="home-logo">LOGO</div>
         <div className="navbar">
-          <div className="home-logo">LOGO</div>
-          <div className="nav-link">BROWSE MARKETS</div>
-          <div className="nav-link">DOCS</div>
-          <div className="nav-link">ADDITIONAL INFO</div>
-          <div className="connect-wallet-btn">
-              <ConnectWalletButton />
-          </div>
+          <div className="nav-link"> <AwesomeButton> BROWSE MARKETS </AwesomeButton> </div>
+          <div className="nav-link"> <AwesomeButton> DOCS </AwesomeButton> </div>
+          <div className="nav-link"> <AwesomeButton> ADDITIONAL INFO </AwesomeButton> </div>
+          <div className="connect-wallet-btn"> <ConnectWalletButton /> </div>
         </div>
-        <div className="markets-text">MARKETS</div>
-        <div className="markets-group">
-          <div className="market-graph">
-            <PriceChart data={btc_data} assetSymbol={"BTC"} />
-          </div>
-          <div className="market-graph-1">
-            <PriceChart data={eth_data} assetSymbol={"ETH"}/>
-          </div>
+        
+        <div className="carousel-component-container"> <HomeComponent server_data={server_data} /> </div>
 
-        </div>
-        <div className="events-text">EVENTS</div>
-        <div className="events-group">
-          <div className="event-card">
-            <BettingEvent contract_details={contract_data['BTC']} provider_url={provider_url}/>
-          </div>
-          <div className="event-card-1">
-            <BettingEvent contract_details={contract_data['ETH']} provider_url={provider_url}/>
-          </div>
-        </div>
-        <div className="social-navbar"></div>
+        <div className="social-navbar"> SOCIAL LINKS </div>
       </div>
     </>
   )
@@ -77,7 +60,7 @@ export const getServerSideProps = async () => {
   }
 
   return {
-    props: {server_data}
+    props: { server_data }
   };
 };
 
