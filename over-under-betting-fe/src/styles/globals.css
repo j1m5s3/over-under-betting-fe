@@ -11,9 +11,9 @@ body {
   padding: 0px 179px 16px 179px;
   box-sizing: border-box;
   overflow: hidden;
-  margin: 25px 25px 25px 25px;
+  margin: 35px 35px 15px 35px;
   border-radius: 5px;
-  background: linear-gradient(to bottom right, #ebb617ec, #0a8310);
+  background: linear-gradient(to bottom right, #5e5b51ec, #222322);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -38,10 +38,9 @@ body {
   justify-content: center;
   align-self: center;
   align-items: center;
-  margin: 0px 0px 32px 0px;
+  margin: 10px 0px 32px 0px;
   padding: 0px 1px 0px 0px;
   box-sizing: border-box;
-
   border-radius: 5px;
 }
 
@@ -118,10 +117,9 @@ body {
   box-sizing: border-box;
   background-color: lightgrey;
   border-radius: 5px;
-  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(219, 177, 6, 0.841);
-  border: 1px solid #ccc;
-  transition: all 0.3s ease;
-  box-shadow: none;
+  border: 5px solid;
+  border-color: #242323 #d3b719 #dd9014 #242323;
+  box-shadow: 0 10px 15px 0 rgba(206, 200, 200, 0.549);
 }
 
 .market-graph-1 {
@@ -131,7 +129,10 @@ body {
   box-sizing: border-box;
   background-color: lightgray;
   border-radius: 5px;
-  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(230, 245, 10, 0.841);
+  border: 5px solid;
+  border-color: #242323 #6ea712 #52a914 #242323;
+  box-shadow: 0 10px 15px 0 rgba(206, 200, 200, 0.549);
+
 }
 
 .events-text {
@@ -162,8 +163,17 @@ body {
   flex-shrink: 0;
   margin: 0px 10px 0px 0px;
   box-sizing: border-box;
+  box-shadow: 0px 10px 15px rgba(219, 150, 11, 0.872);
   background-image: url('../../public/bitcoin.png');
   border-radius: 5px;
+  border: 3px solid;
+  border-color: #242323 #d3b719 #dd9014 #242323;
+  transition: all 0.5s ease;
+}
+
+.event-card:hover {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .event-card-1 {
@@ -174,8 +184,17 @@ body {
   height: 350px;
   flex-shrink: 0;
   box-sizing: border-box;
+  box-shadow: 0px 10px 15px rgba(68, 149, 6, 0.872);
   background-image: url('../../public/eth.png');
   border-radius: 5px;
+  border: 3px solid;
+  border-color: #242323 #69b319 #86b119 #242323;
+  transition: all 0.5s ease;
+}
+
+.event-card-1:hover {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .event-bet-btn {

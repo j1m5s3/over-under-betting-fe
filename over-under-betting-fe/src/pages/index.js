@@ -30,14 +30,13 @@ const Home = ({ server_data }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="home-container">
-        <div className="home-logo">LOGO</div>
         <div className="navbar">
           <div className="nav-link"> <AwesomeButton> BROWSE MARKETS </AwesomeButton> </div>
           <div className="nav-link"> <AwesomeButton> DOCS </AwesomeButton> </div>
           <div className="nav-link"> <AwesomeButton> ADDITIONAL INFO </AwesomeButton> </div>
           <div className="connect-wallet-btn"> <ConnectWalletButton /> </div>
         </div>
-        
+
         <div className="carousel-component-container"> <HomeComponent server_data={server_data} /> </div>
 
         <div className="social-navbar"> SOCIAL LINKS </div>
