@@ -62,19 +62,11 @@ const PriceChart = ({ data, assetSymbol }) => {
         }]
       },
       options: {
-        animations: {
-          tension: {
-            duration: 1000,
-            easing: 'linear',
-            from: 0.5,
-            to: 0,
-            loop: true
-          }
-        },
+
         plugins: {
           legend: {
             labels: {
-              color: 'black',  
+              color: 'black',
               boxHeight: 0,
             }
           }
@@ -88,7 +80,7 @@ const PriceChart = ({ data, assetSymbol }) => {
   }, [price, time]);
 
   return (
-    <canvas ref={chartRef} width={750} height={350} />
+    <canvas ref={chartRef} width="550px" height="350px" />
   );
 };
 

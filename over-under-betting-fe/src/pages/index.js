@@ -29,17 +29,26 @@ const Home = ({ server_data }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="home-container">
-        <div className="navbar">
-          <div className="nav-link"> <AwesomeButton> BROWSE MARKETS </AwesomeButton> </div>
-          <div className="nav-link"> <AwesomeButton> DOCS </AwesomeButton> </div>
-          <div className="nav-link"> <AwesomeButton> ADDITIONAL INFO </AwesomeButton> </div>
-          <div className="connect-wallet-btn"> <ConnectWalletButton /> </div>
+      <div className="home-container container-fluid m-auto">
+        <div className="navbar row navigation m-auto mt-3 justify-content-between">
+          <div className='col'>
+            <button variant="primary" title='Browse Markets' className="nav-link-button text-nowrap text-center btn btn-info">
+              <i className="bi bi-graph-up"></i>
+            </button>
+          </div>
+          <div className='col'>
+            <button variant="primary" title='Docs' className="nav-link-button text-nowrap text-center btn btn-info">
+              <i class="bi bi-file-text-fill"></i>
+            </button> 
+          </div>
+          <div className='col'>
+            <ConnectWalletButton /> 
+          </div>          
         </div>
 
-        <div className="carousel-component-container"> <HomeComponent server_data={server_data} /> </div>
+        <div className="container-fluid m-auto"> <HomeComponent server_data={server_data} /> </div>
 
-        <div className="social-navbar"> SOCIAL LINKS </div>
+        <div className="row social-navbar justify-content-center m-auto mt-5"> SOCIAL LINKS </div>
       </div>
     </>
   )

@@ -122,15 +122,18 @@ const BettingEvent = ({ contract_details, provider_url }) => {
       <div>ASSET SYMBOL: {contract_asset_symbol}</div>
 
       <input type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} />
-      <div className="event-bet-btn">
-        <AwesomeButton onPress={handleOverBet}>
-          Over <div> + </div>
-        </AwesomeButton>
-        <AwesomeButton onPress={handleUnderBet}>
-          Under <div> - </div>
-        </AwesomeButton>
+      <div className="row m-auto mt-2 mb-1">
+        <div className='col m-auto'>
+          <button onClick={handleOverBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
+            <p className='m-auto'>Over + </p>
+          </button>
+        </div>
+        <div className='col m-auto'>
+          <button onClick={handleUnderBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
+            <p className='m-auto'>Under - </p>
+          </button>
+        </div>
       </div>
-
     </>
   )
 }

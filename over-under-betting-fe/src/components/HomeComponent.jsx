@@ -12,21 +12,21 @@ const HomeComponent = ({ server_data }) => {
     return (
         <div>
             <div className="markets-text">MARKETS</div>
-            <div className="markets-group">
-                <div className="market-graph">
+            <div className="row justify-content-between">
+                <div className="col col-md-auto m-auto market-graph-btc">
                     <PriceChart data={btc_data} assetSymbol={"BTC"} />
                 </div>
-                <div className="market-graph-1">
+                <div className="col col-md-auto m-auto market-graph-eth">
                     <PriceChart data={eth_data} assetSymbol={"ETH"} />
                 </div>
 
             </div>
             <div className="events-text">EVENTS</div>
-            <div className="events-group">
-                <div className="event-card">
+            <div className="row justify-content-between">
+                <div className="col col-md-auto m-auto event-card-btc">
                     <BettingEvent contract_details={contract_data['BTC']} provider_url={provider_url} />
                 </div>
-                <div className="event-card-1">
+                <div className="col col-md-auto m-auto event-card-eth">
                     <BettingEvent contract_details={contract_data['ETH']} provider_url={provider_url} />
                 </div>
             </div>

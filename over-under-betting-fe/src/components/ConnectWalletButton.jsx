@@ -34,9 +34,9 @@ const ConnectWalletButton = () => {
   }
 
   return (
-    <AwesomeButton onPress={handleClick}>
-      {isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
-    </AwesomeButton>
+    <button onClick={handleClick} variant="primary" title='Crypto Wallet' className="nav-link-button text-nowrap text-center btn btn-dark">
+      {isConnected ? 'Disconnect Wallet' : <i class="bi bi-wallet2"></i>}
+    </button>
   );
 }
 
