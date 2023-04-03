@@ -11,7 +11,7 @@ import { connectWallet, disconnectWallet } from '@/state/wallet';
 
 const BettingEvent = ({ contract_details, provider_url }) => {
 
-  const price_mark = contract_details.price_mark;
+  const price_mark = contract_details.price_mark.toFixed(2);
   const contract_asset_symbol = contract_details.asset_symbol;
   const event_close = contract_details.event_close;
   const betting_close = contract_details.betting_close;

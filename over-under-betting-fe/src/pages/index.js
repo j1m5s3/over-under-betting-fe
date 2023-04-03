@@ -2,8 +2,6 @@ import Head from 'next/head'
 import Image from 'next/image'
 import React, { useState } from "react"
 import { Inter } from 'next/font/google'
-import { AwesomeButton } from "react-awesome-button"
-import AwesomeButtonStyles from 'react-awesome-button/src/styles/styles.scss';
 
 import ConnectWalletButton from '@/components/ConnectWalletButton'
 import HomeComponent from '@/components/HomeComponent'
@@ -30,18 +28,18 @@ const Home = ({ server_data }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="home-container container-fluid m-auto">
-        <div className="navbar row navigation m-auto mt-3 justify-content-between">
-          <div className='col'>
-            <button variant="primary" title='Browse Markets' className="nav-link-button text-nowrap text-center btn btn-info">
+        <div className="navbar row navigation m-auto mt-3 justify-content-center align-items-center">
+          <div className='col-sm-1 d-flex justify-content-center align-items-center'>
+            <button variant="primary" title='Browse Markets' className="nav-link-button btn btn-dark btn-lg">
               <i className="bi bi-graph-up"></i>
             </button>
           </div>
-          <div className='col'>
-            <button variant="primary" title='Docs' className="nav-link-button text-nowrap text-center btn btn-info">
-              <i class="bi bi-file-text-fill"></i>
+          <div className='col-sm-1 d-flex justify-content-center align-items-center'>
+            <button variant="primary" title='Docs' className="nav-link-button btn btn-dark btn-lg">
+              <i className="bi bi-file-text-fill"></i>
             </button> 
           </div>
-          <div className='col'>
+          <div className='col-sm-1 d-flex justify-content-center align-items-center'>
             <ConnectWalletButton /> 
           </div>          
         </div>
