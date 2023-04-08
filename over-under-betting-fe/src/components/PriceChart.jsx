@@ -17,6 +17,7 @@ const PriceChart = ({ data, assetSymbol }) => {
 
   const [price, setPrice] = useState(chart_data.price);
   const [time, setTime] = useState(chart_data.time);
+  const [lastPrice, setLastPrice] = useState(chart_data.price[chart_data.price.length - 1]);
 
   const chartAssetSymbol = assetSymbol;
   const chartInstance = useRef(null);
@@ -25,58 +26,62 @@ const PriceChart = ({ data, assetSymbol }) => {
   async function getChart() {
     const hourly_data = await get_hourly_asset_price_data(chartAssetSymbol, 24);
     const mapped_chart_data = map_chart_record_data(hourly_data);
-    setPrice(mapped_chart_data.price);
-    setTime(mapped_chart_data.time);
+    console.log("lastPrice: " + lastPrice);
+    console.log("mapped_chart_data.price[mapped_chart_data.price.length - 1]: " + mapped_chart_data.price[mapped_chart_data.price.length - 1]);
+    if (mapped_chart_data.price[mapped_chart_data.price.length - 1] !== lastPrice) {
+      setPrice(prevPrice => [...prevPrice.slice(1), mapped_chart_data.price[mapped_chart_data.price.length - 1]]);
+      setTime(prevTime => [...prevTime.slice(1), mapped_chart_data.time[mapped_chart_data.time.length - 1]]);
+      setLastPrice(mapped_chart_data.price[mapped_chart_data.price.length - 1]);
+    }
   }
 
   useEffect(() => {
     const updateChart = setInterval(() => {
-      getChart()
+      getChart();
     }, 35000);
     return () => clearInterval(updateChart);
-  }, [price, time]);
+  }, []);
 
   useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-
-    // Destroy previous chart instance
-    if (chartInstance.current !== null) {
-      chartInstance.current.destroy();
-    }
-
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: time,
-        datasets: [{
-          label: price_chart_title,
-          data: price,
-          fill: false,
-          pointStyle: 'circle',
-          borderColor: line_color,
-          pointBackgroundColor: "rgba(255,255,0,1)",
-          tension: 0.1,
-          pointRadius: price.length - 1 === 0 ? 5 : Array(price.length - 1).fill(5).concat([10]),
-          pointBorderColor: price.length - 1 === 0 ? "rgba(75,192,192,1)" : Array(price.length - 1).fill("rgba(75,192,192,1)").concat(["#ff0000"]),
-          pointBorderWidth: 2
-        }]
-      },
-      options: {
-
-        plugins: {
-          legend: {
-            labels: {
-              color: 'black',
-              boxHeight: 0,
+    if (chartInstance.current === null) {
+      console.log("chartInstance.current === null");
+      // Create chart instance
+      const ctx = chartRef.current.getContext("2d");
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: time,
+          datasets: [{
+            label: price_chart_title,
+            data: price,
+            fill: false,
+            pointStyle: 'circle',
+            borderColor: line_color,
+            pointBackgroundColor: "rgba(255,255,0,1)",
+            tension: 0.1,
+            pointRadius: price.length - 1 === 0 ? 5 : Array(price.length - 1).fill(5).concat([10]),
+            pointBorderColor: price.length - 1 === 0 ? "rgba(75,192,192,1)" : Array(price.length - 1).fill("rgba(75,192,192,1)").concat(["#ff0000"]),
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: {
+                color: 'black',
+                boxHeight: 0,
+              }
             }
           }
         }
-      }
-    });
-
-    chartInstance.current = chart;
-
-    return () => chart.destroy();
+      });
+      chartInstance.current = chart;
+    } else {
+      // Update chart data
+      chartInstance.current.data.labels = time;
+      chartInstance.current.data.datasets[0].data = price;
+      chartInstance.current.update();
+    }
   }, [price, time]);
 
   return (

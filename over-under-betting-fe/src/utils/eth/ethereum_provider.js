@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 export class ETHProvider {
 
     constructor(providerUrl) {
-        this.provider = new ethers.providers.JsonRpcProvider(providerUrl);
+        this.provider = new ethers.providers.StaticJsonRpcProvider(providerUrl);
     }
 
     getContract(contractAddress, contractABI, signer = null) {

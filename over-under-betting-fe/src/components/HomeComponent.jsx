@@ -3,11 +3,15 @@ import React from 'react'
 import PriceChart from '@/components/PriceChart'
 import BettingEvent from '@/components/BettingEvent'
 
+import { ETHProvider} from '@/utils/eth/ethereum_provider';
+
 const HomeComponent = ({ server_data }) => {
     const btc_data = server_data['btc'];
     const eth_data = server_data['eth'];
     const contract_data = server_data['events'];
     const provider_url = server_data['provider_url'];
+
+    const eth_provider = new ETHProvider(provider_url);
 
     return (
         <div>
@@ -24,10 +28,10 @@ const HomeComponent = ({ server_data }) => {
             <div className="events-text">EVENTS</div>
             <div className="row justify-content-between">
                 <div className="col col-md-auto m-auto event-card-btc">
-                    <BettingEvent contract_details={contract_data['BTC']} provider_url={provider_url} />
+                    <BettingEvent contract_details={contract_data['BTC']} eth_provider={eth_provider} />
                 </div>
                 <div className="col col-md-auto m-auto event-card-eth">
-                    <BettingEvent contract_details={contract_data['ETH']} provider_url={provider_url} />
+                    <BettingEvent contract_details={contract_data['ETH']} eth_provider={eth_provider} />
                 </div>
             </div>
         </div>

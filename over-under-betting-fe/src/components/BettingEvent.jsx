@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethers } from 'ethers';
-import { AwesomeButton } from 'react-awesome-button'
 
 import { get_wallet, get_signer } from '@/utils/eth/wallet_utils';
-import { ETHProvider, ContractInterface } from '@/utils/eth/ethereum_provider';
+import { ContractInterface } from '@/utils/eth/ethereum_provider';
 
 import { connectWallet, disconnectWallet } from '@/state/wallet';
 
+import { convert_timestamp, create_counter_elements } from '@/utils/time_utils/time_utils';
 
-const BettingEvent = ({ contract_details, provider_url }) => {
+
+const BettingEvent = ({ contract_details, eth_provider }) => {
 
   const price_mark = contract_details.price_mark.toFixed(2);
   const contract_asset_symbol = contract_details.asset_symbol;
@@ -17,11 +18,12 @@ const BettingEvent = ({ contract_details, provider_url }) => {
   const betting_close = contract_details.betting_close;
   const contract_address = contract_details.contract_address;
   const contract_abi = contract_details.contract_abi;
-  const provider_connection_string = provider_url;
-  const eth_provider = new ETHProvider(provider_connection_string);
 
   const dispatch = useDispatch();
+
   const [betValue, setBetValue] = useState('0.0011');
+  const [bettingTimeRemaining, setBettingTimeRemaining] = useState(null);
+  const [eventTimeRemaining, setEventTimeRemaining] = useState(null);
 
   const isConnected = useSelector((state) => state.wallet.isConnected);
   const walletAddress = useSelector((state) => state.wallet.address);
@@ -36,6 +38,7 @@ const BettingEvent = ({ contract_details, provider_url }) => {
     console.log("walletAddress uf: " + walletAddress);
 
     if (isConnected) {
+      console.log("isConnected: " + isConnected);
       const signer = get_signer(window.ethereum);
       console.log("signer uf: " + signer);
       setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
@@ -44,16 +47,31 @@ const BettingEvent = ({ contract_details, provider_url }) => {
 
   }, [isConnected]);
 
-  /*
-   async function getContractInfo() {
-     const price_mark = await contractInterface.getPriceMark();
-     const name = await contractInterface.getContractName();
-     console.log("contract_info: " + name);
-     console.log("price_mark: " + price_mark);
- 
-     
-   }
-   */
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const timeLeft = convert_timestamp(betting_close);
+      if (timeLeft > 0) {
+        const counter_elements = create_counter_elements(timeLeft);
+        setBettingTimeRemaining(`${counter_elements.days}d:${counter_elements.hours}hrs:${counter_elements.minutes}mins:${counter_elements.seconds}s`);
+      } else {
+        clearInterval(timer);
+        setBettingTimeRemaining("BETTING COMPLETE");
+      }
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const timeLeft = convert_timestamp(event_close);
+      if (timeLeft > 0) {
+        const counter_elements = create_counter_elements(timeLeft);
+        setEventTimeRemaining(`${counter_elements.days}d:${counter_elements.hours}hrs:${counter_elements.minutes}mins:${counter_elements.seconds}s`);
+      } else {
+        clearInterval(timer);
+        setEventTimeRemaining("EVENT COMPLETE");
+      }
+    }, 1000);
+  }, []);
 
   async function handleOverBet() {
     if (!window.ethereum) {
@@ -107,21 +125,19 @@ const BettingEvent = ({ contract_details, provider_url }) => {
     }
   }
 
-  // Address of deployed contract stored in DB
-  //const contract_address = contract_details['contract_address'];
-  // JSON interface to contract stored in DB
-  //const contract_abi = contract_details['contract_address'];
-
   return (
     <>
-      <div>Betting Event</div>
-      <div>Address: {contract_address}</div>
-      <div> Event Close: {event_close}</div>
-      <div> Betting Close: {betting_close}</div>
-      <div>Price Mark: ${price_mark} USD</div>
-      <div>ASSET SYMBOL: {contract_asset_symbol}</div>
+      <div> {contract_asset_symbol} betting event </div>
+      <div> Address: {contract_address} </div>
+      <div> Event Close: {eventTimeRemaining} </div>
+      <div> Betting Close: {bettingTimeRemaining} </div>
+      <div> Price Mark: ${price_mark} USD </div>
+      <div>
+        <label className="form-label mb-0">Bet: </label>
+        <input type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} />
+      </div>
 
-      <input type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} />
+
       <div className="row m-auto mt-2 mb-1">
         <div className='col m-auto'>
           <button onClick={handleOverBet} className="event-bet-btn text-nowrap text-center btn btn-dark">

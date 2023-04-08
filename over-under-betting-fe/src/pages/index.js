@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import Link from 'next/link'
 import React, { useState } from "react"
 import { Inter } from 'next/font/google'
 
@@ -17,8 +17,6 @@ const Home = ({ server_data }) => {
   const contract_data = server_data['events'];
   const provider_url = server_data['provider_url'];
 
-
-
   return (
     <>
       <Head>
@@ -29,24 +27,40 @@ const Home = ({ server_data }) => {
       </Head>
       <div className="home-container container-fluid m-auto">
         <div className="navbar row navigation m-auto mt-3 justify-content-center align-items-center">
-          <div className='col-sm-1 d-flex justify-content-center align-items-center'>
+          <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>
             <button variant="primary" title='Browse Markets' className="nav-link-button btn btn-dark btn-lg">
               <i className="bi bi-graph-up"></i>
             </button>
           </div>
-          <div className='col-sm-1 d-flex justify-content-center align-items-center'>
-            <button variant="primary" title='Docs' className="nav-link-button btn btn-dark btn-lg">
+          <div className='col-sm-1  me-3 d-flex justify-content-center align-items-center'>
+            <button variant="primary" title='Docs' className="nav-link-button btn btn-dark btn-lg m-auto-2">
               <i className="bi bi-file-text-fill"></i>
             </button> 
           </div>
-          <div className='col-sm-1 d-flex justify-content-center align-items-center'>
+          <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>
             <ConnectWalletButton /> 
           </div>          
         </div>
 
         <div className="container-fluid m-auto"> <HomeComponent server_data={server_data} /> </div>
 
-        <div className="row social-navbar justify-content-center m-auto mt-5"> SOCIAL LINKS </div>
+        <div className="row social-navbar m-auto mt-3 justify-content-center align-items-center">
+          <div className="col-sm-1 d-flex justify-content-center align-items-center">
+            <Link href="https://linkedin.com/in/james-lynch-14645911a">
+              <button title="LinkedIn" variant="primary" className="nav-link-button mb-1">
+                <i className="bi bi-linkedin"></i>
+              </button>
+            </Link>
+          </div>
+          <div className="col-sm-1 d-flex justify-content-center align-items-center">
+            <Link href="https://github.com/j1m5s3">
+              <button title="GitHub" variant="primary" className="nav-link-button mb-1">
+                <i className="bi bi-github"></i>
+              </button>
+            </Link>
+          </div>
+        </div>
+
       </div>
     </>
   )
