@@ -15,7 +15,7 @@ const HomeComponent = ({ server_data }) => {
 
     return (
         <div>
-            <div className="markets-text">MARKETS</div>
+            <div className="home-text-container">CHARTS</div>
             <div className="row justify-content-between">
                 <div className="col col-md-auto m-auto market-graph-btc">
                     <PriceChart data={btc_data} assetSymbol={"BTC"} />
@@ -25,7 +25,7 @@ const HomeComponent = ({ server_data }) => {
                 </div>
 
             </div>
-            <div className="events-text">EVENTS</div>
+            <div className="home-text-container">ACTIVE EVENTS</div>
             <div className="row justify-content-between">
                 <div className="col col-md-auto m-auto event-card-btc">
                     <BettingEvent contract_details={contract_data['BTC']} eth_provider={eth_provider} />

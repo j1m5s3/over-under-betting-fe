@@ -5,6 +5,10 @@ import { Inter } from 'next/font/google'
 
 import ConnectWalletButton from '@/components/ConnectWalletButton'
 import HomeComponent from '@/components/HomeComponent'
+import Markets from '@/components/Markets'
+import UserDashboard from '@/components/UserDashboard'
+import Docs from '@/components/Docs'
+
 
 import { get_all_hourly_price_data, get_current_six_hour_event_data } from '@/utils/api_calls/over_under_api_calls'
 
@@ -17,6 +21,20 @@ const Home = ({ server_data }) => {
   const contract_data = server_data['events'];
   const provider_url = server_data['provider_url'];
 
+  const [btnSelection, setBtnSelection] = useState('home');
+
+  function handleClick(selection) {
+    if (selection == 'home' && btnSelection != 'home') {
+      setBtnSelection('home');
+    } else if (selection == 'markets' && btnSelection != 'markets') {
+      setBtnSelection('markets');
+    } else if (selection == 'dashboard' && btnSelection != 'dashboard') {
+      setBtnSelection('dashboard');
+    } else if (selection == 'docs' && btnSelection != 'docs') {
+      setBtnSelection('docs');
+    }
+  }
+
   return (
     <>
       <Head>
@@ -28,21 +46,36 @@ const Home = ({ server_data }) => {
       <div className="home-container container-fluid m-auto">
         <div className="navbar row navigation m-auto mt-3 justify-content-center align-items-center">
           <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>
-            <button variant="primary" title='Browse Markets' className="nav-link-button btn btn-dark btn-lg">
+            <button onClick={() => handleClick('home')} variant="primary" title='Home' className="nav-link-button btn btn-dark btn-lg">
+              <i className="bi bi-house-door"></i>
+            </button>
+          </div>
+          <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>
+            <button onClick={() => handleClick('markets')} variant="primary" title='Browse Markets' className="nav-link-button btn btn-dark btn-lg">
               <i className="bi bi-graph-up"></i>
             </button>
           </div>
           <div className='col-sm-1  me-3 d-flex justify-content-center align-items-center'>
-            <button variant="primary" title='Docs' className="nav-link-button btn btn-dark btn-lg m-auto-2">
+            <button onClick={() => handleClick('docs')} variant="primary" title='Docs' className="nav-link-button btn btn-dark btn-lg m-auto-2">
               <i className="bi bi-file-text-fill"></i>
-            </button> 
+            </button>
+          </div>
+          <div className='col-sm-1  me-3 d-flex justify-content-center align-items-center'>
+            <button onClick={() => handleClick('dashboard')} variant="primary" title='Manage participated events' className="nav-link-button btn btn-dark btn-lg m-auto-2">
+              <i class="bi bi-columns-gap"></i>
+            </button>
           </div>
           <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>
-            <ConnectWalletButton /> 
-          </div>          
+            <ConnectWalletButton />
+          </div>
         </div>
 
-        <div className="container-fluid m-auto"> <HomeComponent server_data={server_data} /> </div>
+        <div className="container-fluid m-auto">
+          {btnSelection == 'home' && <HomeComponent server_data={server_data} />}
+          {btnSelection == 'markets' && <Markets />}
+          {btnSelection == 'dashboard' && <UserDashboard />}
+          {btnSelection == 'docs' && <Docs />}
+        </div>
 
         <div className="row social-navbar m-auto mt-3 justify-content-center align-items-center">
           <div className="col-sm-1 d-flex justify-content-center align-items-center">

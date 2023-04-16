@@ -18,10 +18,11 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
   const betting_close = contract_details.betting_close;
   const contract_address = contract_details.contract_address;
   const contract_abi = contract_details.contract_abi;
+  const min_bet_value = 0.0011;
 
   const dispatch = useDispatch();
 
-  const [betValue, setBetValue] = useState('0.0011');
+  const [betValue, setBetValue] = useState(min_bet_value);
   const [bettingTimeRemaining, setBettingTimeRemaining] = useState(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState(null);
 
@@ -32,6 +33,8 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
   const [contractHandle, setContractHandle] = useState(eth_provider.getContract(contract_address, contract_abi, signer));
   const [contractInterface, setContractInterface] = useState(new ContractInterface(contractHandle));
 
+  //const [isWinner, setIsWinner] = useState(false);
+
   useEffect(() => {
     // Update contractHandle and contractInterface when isConnected and signer change
     console.log("isConnected uf: " + isConnected);
@@ -41,8 +44,14 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       console.log("isConnected: " + isConnected);
       const signer = get_signer(window.ethereum);
       console.log("signer uf: " + signer);
+
       setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
       setContractInterface(new ContractInterface(contractHandle));
+
+      //const withdrawAddresses = contractInterface.getWithdrawableFundAddresses();
+      //if (withdrawAddresses.includes(walletAddress)) {
+      //  setIsWinner(true);
+      //}
     }
 
   }, [isConnected]);
@@ -125,20 +134,51 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
     }
   }
 
+  async function handleWithdraw() {
+    if (!window.ethereum) {
+      console.log("window: ", window)
+      alert('Please install MetaMask to connect your wallet.');
+      return;
+    }
+    const gas_price = await eth_provider.getGasPrice();
+
+    if (!isConnected) {
+      const wallet = await get_wallet(window.ethereum);
+
+      let provider_name = wallet.provider_name;
+      let signer = wallet.signer;
+      let address = wallet.address;
+
+      dispatch(connectWallet({ provider_name, signer, address }));
+
+      const txn_response = await contractInterface.winnerWithdrawFunds(gas_price);
+    }
+    if (isConnected) {
+      const txn_response = await contractInterface.winnerWithdrawFunds(gas_price);
+    }
+  }
+
   return (
     <>
-      <div> {contract_asset_symbol} betting event </div>
-      <div> Address: {contract_address} </div>
-      <div> Event Close: {eventTimeRemaining} </div>
-      <div> Betting Close: {bettingTimeRemaining} </div>
-      <div> Price Mark: ${price_mark} USD </div>
+      <div className='event-card-text-container mt-2'>
+        <div> {contract_asset_symbol} betting event </div>
+        <div> Address: {contract_address} </div>
+        <div className='row m-auto'>
+          <div className='col m-auto d-flex justify-content-center align-items-center'> --------------------------- </div>
+        </div>
+        <div> Event Close: {eventTimeRemaining} </div>
+        <div> Betting Close: {bettingTimeRemaining} </div>
+        <div> Price Mark: ${price_mark} USD </div>
+      </div>
+
       <div>
-        <label className="form-label mb-0">Bet: </label>
-        <input type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} />
+        <label className="form-label mb-0 mt-3 me-3"><h6> PLACE YOUR BET </h6></label>
+        <input className='event-bet-input-field' type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} placeholder={min_bet_value + 'min ETH Bet' }/>
+        <label className="form-label mb-0 mt-3 ms-2">ETH </label>
       </div>
 
 
-      <div className="row m-auto mt-2 mb-1">
+      <div className="row m-auto mt-2 mb-2">
         <div className='col m-auto'>
           <button onClick={handleOverBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
             <p className='m-auto'>Over + </p>

@@ -65,6 +65,11 @@ export class ContractInterface {
         return contractBalance;
     }
 
+    async getWithdrawableFundAddresses() {
+        const withdrawableFundAddresses = await this.contract_handle.getWithdrawableFundAddresses();
+        return withdrawableFundAddresses;
+    }
+
     async makeUnderBet(value, gas_price) {
         // TODO: Programatically get gas_limit. Optimize gas price estimation
         const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 6000000});
@@ -74,6 +79,11 @@ export class ContractInterface {
     async makeOverBet(value, gas_price) {
         // TODO: Programatically get gas_limit. Optimize gas price estimation
         const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 6000000});
+        return txn_response;
+    }
+
+    async winnerWithdrawFunds(gas_price) {
+        const txn_response = await this.contract_handle.winnerWithdrawFunds({ gasPrice: gas_price, gasLimit: 6000000});
         return txn_response;
     }
 }
