@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import React, { useState } from "react"
 import { Inter } from 'next/font/google'
 
@@ -43,7 +44,7 @@ const Home = ({ server_data }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="home-container container-fluid m-auto">
+      <div className="home-container container m-auto">
         <div className="navbar row navigation m-auto mt-3 justify-content-center align-items-center">
           <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>
             <button onClick={() => handleClick('home')} variant="primary" title='Home' className="nav-link-button btn btn-dark btn-lg">

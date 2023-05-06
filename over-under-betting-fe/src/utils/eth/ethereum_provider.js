@@ -65,9 +65,9 @@ export class ContractInterface {
         return contractBalance;
     }
 
-    async getWithdrawableFundAddresses() {
-        const withdrawableFundAddresses = await this.contract_handle.getWithdrawableFundAddresses();
-        return withdrawableFundAddresses;
+    async getWinningBettersAddresses() {
+        const winningBettersAddresse = await this.contract_handle.getWinningBettersAddresses();
+        return winningBettersAddresse;
     }
 
     async makeUnderBet(value, gas_price) {

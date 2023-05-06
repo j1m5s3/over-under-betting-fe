@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AwesomeButton } from 'react-awesome-button'
-import AwesomeButtonStyles from 'react-awesome-button/src/styles/styles.scss';
+import { useContext } from 'react'
 
-import { connectWallet, disconnectWallet } from '@/state/wallet';
+import useStore from '@/state/zustand_store'
+import { useGetFromStore } from '@/hooks/wallet';
 
 import { get_wallet } from '@/utils/eth/wallet_utils';
 
 
-const ConnectWalletButton = () => {
-  const dispatch = useDispatch();
-  const isConnected = useSelector((state) => state.wallet.isConnected);
 
-  const [btnTitle, setBtnTitle] = useState('Connect Wallet');
+const ConnectWalletButton = () => {
+  const store = useContext(useStore);
+  
+  const buttonTitle = useGetFromStore(useStore, (state) => state.connectButtonMsg);
+  console.log("buttonTitle: " + buttonTitle);
+  const [btnTitle, setBtnTitle] = useState(buttonTitle);
+
+  const isConnected = useGetFromStore(useStore, (state) => state.isConnected);
+
+  //const connectWallet = useGetFromStore(useStore, (state) => state.connectWallet);
+  const connectWallet = useStore((state) => state.connectWallet);
+  const disconnectWallet = useStore((state) => state.disconnectWallet);
 
   async function handleClick() {
     
@@ -29,11 +36,13 @@ const ConnectWalletButton = () => {
       let address = wallet.address;
       console.log("signer cwb: " + signer);
 
-      dispatch(connectWallet({ provider_name, signer, address }));
+      //dispatch(connectWallet({ provider_name, signer, address }));
+      connectWallet(provider_name, signer, address);
       setBtnTitle('Disconnect Wallet');
     }
     if (isConnected) {
-      dispatch(disconnectWallet());
+      //dispatch(disconnectWallet());
+      disconnectWallet();
       setBtnTitle('Connect Wallet');
     }
   }

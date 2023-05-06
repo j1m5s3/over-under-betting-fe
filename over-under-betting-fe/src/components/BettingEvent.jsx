@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 
@@ -6,6 +6,8 @@ import { get_wallet, get_signer } from '@/utils/eth/wallet_utils';
 import { ContractInterface } from '@/utils/eth/ethereum_provider';
 
 import { connectWallet, disconnectWallet } from '@/state/wallet';
+import useStore from '@/state/zustand_store'
+import { useGetFromStore } from '@/hooks/wallet';
 
 import { convert_timestamp, create_counter_elements } from '@/utils/time_utils/time_utils';
 
@@ -20,18 +22,23 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
   const contract_abi = contract_details.contract_abi;
   const min_bet_value = 0.0011;
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const [betValue, setBetValue] = useState(min_bet_value);
   const [bettingTimeRemaining, setBettingTimeRemaining] = useState(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState(null);
 
-  const isConnected = useSelector((state) => state.wallet.isConnected);
-  const walletAddress = useSelector((state) => state.wallet.address);
-  const signer = useSelector((state) => state.signer);
+  //const isConnected = useSelector((state) => state.wallet.isConnected);
+  //const walletAddress = useSelector((state) => state.wallet.address);
+  //const signer = useSelector((state) => state.signer);
+  const isConnected = useGetFromStore(useStore, (state) => state.isConnected);
+  const walletAddress = useGetFromStore(useStore, (state) => state.address);
+  const signer = useGetFromStore(useStore, (state) => state.signer);
+  const connectWallet = useStore((state) => state.connectWallet);
+  const disconnectWallet = useStore((state) => state.disconnectWallet);
 
-  const [contractHandle, setContractHandle] = useState(eth_provider.getContract(contract_address, contract_abi, signer));
-  const [contractInterface, setContractInterface] = useState(new ContractInterface(contractHandle));
+  const [contractHandle, setContractHandle] = useState(null);
+  const [contractInterface, setContractInterface] = useState(null);
 
   //const [isWinner, setIsWinner] = useState(false);
 
@@ -47,7 +54,8 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
 
       setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
       setContractInterface(new ContractInterface(contractHandle));
-
+      console.log("contractHandle uf: " + contractHandle);
+      console.log("contractInterface uf: " + contractInterface);
       //const withdrawAddresses = contractInterface.getWithdrawableFundAddresses();
       //if (withdrawAddresses.includes(walletAddress)) {
       //  setIsWinner(true);
@@ -97,10 +105,15 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       let signer = wallet.signer;
       let address = wallet.address;
 
-      dispatch(connectWallet({ provider_name, signer, address }));
+      connectWallet({ provider_name, signer, address });
+      
+      setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
+      setContractInterface(new ContractInterface(contractHandle));
 
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeOverBet(value_to_send, gas_price);
+
+      //dispatch(connectWallet({ provider_name, signer, address }));
     }
     if (isConnected) {
       const value_to_send = ethers.utils.parseEther(betValue)
@@ -123,10 +136,15 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       let signer = wallet.signer;
       let address = wallet.address;
 
-      dispatch(connectWallet({ provider_name, signer, address }));
+      useStore(state => state.connectWallet({ provider_name, signer, address }))
+
+      setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
+      setContractInterface(new ContractInterface(contractHandle));
 
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeUnderBet(value_to_send, gas_price);
+
+      //dispatch(connectWallet({ provider_name, signer, address }));
     }
     if (isConnected) {
       const value_to_send = ethers.utils.parseEther(betValue)
@@ -149,7 +167,8 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       let signer = wallet.signer;
       let address = wallet.address;
 
-      dispatch(connectWallet({ provider_name, signer, address }));
+      //dispatch(connectWallet({ provider_name, signer, address }));
+      connectWallet( provider_name, signer, address );
 
       const txn_response = await contractInterface.winnerWithdrawFunds(gas_price);
     }
