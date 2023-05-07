@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import React, { useState } from "react"
 import { Inter } from 'next/font/google'
 
-import ConnectWalletButton from '@/components/ConnectWalletButton'
+//import ConnectWalletButton from '@/components/ConnectWalletButton'
 import HomeComponent from '@/components/HomeComponent'
 import Markets from '@/components/Markets'
 import UserDashboard from '@/components/UserDashboard'
@@ -15,6 +15,10 @@ import { get_all_hourly_price_data, get_current_six_hour_event_data } from '@/ut
 
 const inter = Inter({ subsets: ['latin'] })
 
+const ConnectWalletButton = dynamic(() => import('@/components/ConnectWalletButton'), {
+  loading: () => <p>Loading...</p>,
+  ssr: false
+});
 
 const Home = ({ server_data }) => {
   const btc_data = server_data['btc'];
@@ -63,7 +67,7 @@ const Home = ({ server_data }) => {
           </div>
           <div className='col-sm-1  me-3 d-flex justify-content-center align-items-center'>
             <button onClick={() => handleClick('dashboard')} variant="primary" title='Manage participated events' className="nav-link-button btn btn-dark btn-lg m-auto-2">
-              <i class="bi bi-columns-gap"></i>
+              <i className="bi bi-columns-gap"></i>
             </button>
           </div>
           <div className='col-sm-1 me-3 d-flex justify-content-center align-items-center'>

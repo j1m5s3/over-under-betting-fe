@@ -33,9 +33,7 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
   //const signer = useSelector((state) => state.signer);
   const isConnected = useGetFromStore(useStore, (state) => state.isConnected);
   const walletAddress = useGetFromStore(useStore, (state) => state.address);
-  const signer = useGetFromStore(useStore, (state) => state.signer);
   const connectWallet = useStore((state) => state.connectWallet);
-  const disconnectWallet = useStore((state) => state.disconnectWallet);
 
   const [contractHandle, setContractHandle] = useState(null);
   const [contractInterface, setContractInterface] = useState(null);
@@ -105,7 +103,7 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       let signer = wallet.signer;
       let address = wallet.address;
 
-      connectWallet({ provider_name, signer, address });
+      connectWallet(provider_name, address);
       
       setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
       setContractInterface(new ContractInterface(contractHandle));
@@ -136,7 +134,7 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       let signer = wallet.signer;
       let address = wallet.address;
 
-      useStore(state => state.connectWallet({ provider_name, signer, address }))
+      connectWallet( provider_name, address );
 
       setContractHandle(eth_provider.getContract(contract_address, contract_abi, signer));
       setContractInterface(new ContractInterface(contractHandle));

@@ -1,17 +1,15 @@
 import { create } from 'zustand'
 import { walletStoreSlice } from './zustand_wallet'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 
 const useStore = create(
-    persist(
-        (...a) => ({
-            ...walletStoreSlice(...a),
-          }), 
-        { 
-            name: 'wallet-storage',
-            serialize: (state) => ({ ...state }),
-            storage: createJSONStorage(() => sessionStorage), 
-        }
+    devtools(
+        persist(walletStoreSlice,
+            {
+                name: 'wallet',
+                storage: createJSONStorage(() => localStorage),
+            }
+        )
     )
 )
 

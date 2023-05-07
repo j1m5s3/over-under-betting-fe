@@ -9,10 +9,8 @@ import { get_wallet } from '@/utils/eth/wallet_utils';
 
 
 const ConnectWalletButton = () => {
-  const store = useContext(useStore);
-  
-  const buttonTitle = useGetFromStore(useStore, (state) => state.connectButtonMsg);
-  console.log("buttonTitle: " + buttonTitle);
+  //const buttonTitle = useGetFromStore(useStore, (state) => state.connectButtonMsg);
+  const buttonTitle = useStore((state) => state.connectButtonMsg);
   const [btnTitle, setBtnTitle] = useState(buttonTitle);
 
   const isConnected = useGetFromStore(useStore, (state) => state.isConnected);
@@ -20,6 +18,7 @@ const ConnectWalletButton = () => {
   //const connectWallet = useGetFromStore(useStore, (state) => state.connectWallet);
   const connectWallet = useStore((state) => state.connectWallet);
   const disconnectWallet = useStore((state) => state.disconnectWallet);
+
 
   async function handleClick() {
     
@@ -35,9 +34,11 @@ const ConnectWalletButton = () => {
       let signer = wallet.signer;
       let address = wallet.address;
       console.log("signer cwb: " + signer);
+      console.log("address cwb: " + address);
+      console.log("provider_name cwb: " + provider_name);
 
       //dispatch(connectWallet({ provider_name, signer, address }));
-      connectWallet(provider_name, signer, address);
+      connectWallet(provider_name, address);
       setBtnTitle('Disconnect Wallet');
     }
     if (isConnected) {

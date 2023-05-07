@@ -26,6 +26,7 @@
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "sass": "^1.60.0",
-    "zustand": "^4.3.7"
+    "zustand": "^4.3.7",
+    "zustand-persist": "^0.4.0"
   }
 }

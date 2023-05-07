@@ -1,9 +1,15 @@
+import dynamic from 'next/dynamic'
 import React from 'react'
 
 import PriceChart from '@/components/PriceChart'
-import BettingEvent from '@/components/BettingEvent'
+//import BettingEvent from '@/components/BettingEvent'
 
 import { ETHProvider} from '@/utils/eth/ethereum_provider';
+
+const BettingEvent = dynamic(() => import('@/components/BettingEvent'), {
+    loading: () => <p>Loading...</p>,
+    ssr: false
+  });
 
 const HomeComponent = ({ server_data }) => {
     const btc_data = server_data['btc'];
