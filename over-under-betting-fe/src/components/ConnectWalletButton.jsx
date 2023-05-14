@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useContext } from 'react'
 
 import useStore from '@/state/zustand_store'
 import { useGetFromStore } from '@/hooks/wallet';
@@ -33,12 +32,13 @@ const ConnectWalletButton = () => {
       let provider_name = wallet.provider_name;
       let signer = wallet.signer;
       let address = wallet.address;
+      let wallet_balance = wallet.balance;
       console.log("signer cwb: " + signer);
       console.log("address cwb: " + address);
       console.log("provider_name cwb: " + provider_name);
 
       //dispatch(connectWallet({ provider_name, signer, address }));
-      connectWallet(provider_name, address);
+      connectWallet(provider_name, address, wallet_balance);
       setBtnTitle('Disconnect Wallet');
     }
     if (isConnected) {

@@ -4,14 +4,17 @@ import dynamic from 'next/dynamic'
 import React, { useState } from "react"
 import { Inter } from 'next/font/google'
 
-//import ConnectWalletButton from '@/components/ConnectWalletButton'
 import HomeComponent from '@/components/HomeComponent'
 import Markets from '@/components/Markets'
 import UserDashboard from '@/components/UserDashboard'
 import Docs from '@/components/Docs'
 
 
-import { get_all_hourly_price_data, get_current_six_hour_event_data } from '@/utils/api_calls/over_under_api_calls'
+import { 
+  get_all_hourly_price_data, 
+  get_current_six_hour_event_data,
+  get_current_test_event_data 
+} from '@/utils/api_calls/over_under_api_calls'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -106,8 +109,16 @@ const Home = ({ server_data }) => {
 
 // For now just get data for charts
 export const getServerSideProps = async () => {
-  const price_data = await get_all_hourly_price_data(24);
-  const contract_data = await get_current_six_hour_event_data();
+  var price_data = await get_all_hourly_price_data(24);
+  var contract_data;
+  
+  if (process.env.NEXT_PUBLIC_ENV == 'development') {
+    contract_data = await get_current_test_event_data();
+  }
+  else {
+    contract_data = await get_current_six_hour_event_data();
+  }
+  
   const provider_url = process.env.NEXT_SEPOLIA_URL;
 
   const server_data = {

@@ -19,6 +19,7 @@ const PriceChart = ({ data, assetSymbol }) => {
     console.log("lastPrice: " + lastPrice);
     console.log("mapped_chart_data.price[mapped_chart_data.price.length - 1]: " + mapped_chart_data.price[mapped_chart_data.price.length - 1]);
     if (mapped_chart_data.price[mapped_chart_data.price.length - 1] !== lastPrice) {
+      console.log("new price added to chart: " + mapped_chart_data.price[mapped_chart_data.price.length - 1]);
       setPrice(prevPrice => [...prevPrice.slice(1), mapped_chart_data.price[mapped_chart_data.price.length - 1]]);
       setTime(prevTime => [...prevTime.slice(1), mapped_chart_data.time[mapped_chart_data.time.length - 1]]);
       setLastPrice(mapped_chart_data.price[mapped_chart_data.price.length - 1]);

@@ -1,4 +1,5 @@
 
+
 export const get_all_hourly_price_data = async (hours) => {
   const base_url = process.env.NEXT_PUBLIC_BE_URL;
 
@@ -72,6 +73,28 @@ export const get_current_six_hour_event_data = async() => {
   const base_url = process.env.NEXT_PUBLIC_BE_URL;
   const six_hour_event_route = '/events/current/6hr_events';
   const live_url = base_url + six_hour_event_route;
+
+  const events_data = await fetch(live_url).then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not OK');
+    }
+    return response.json();
+  });
+  const contract_data = events_data.data;
+
+
+  let contract_data_formatted = {}
+  contract_data.forEach(value => {
+      contract_data_formatted[value.asset_symbol] = value;
+  });
+
+  return contract_data_formatted;
+}
+
+export const get_current_test_event_data = async() => {
+  const base_url = process.env.NEXT_PUBLIC_BE_URL;
+  const test_event_route = '/events/current/test_events';
+  const live_url = base_url + test_event_route;
 
   const events_data = await fetch(live_url).then((response) => {
     if (!response.ok) {

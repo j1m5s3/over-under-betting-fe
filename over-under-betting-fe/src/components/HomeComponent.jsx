@@ -2,7 +2,6 @@ import dynamic from 'next/dynamic'
 import React from 'react'
 
 import PriceChart from '@/components/PriceChart'
-//import BettingEvent from '@/components/BettingEvent'
 
 import { ETHProvider} from '@/utils/eth/ethereum_provider';
 

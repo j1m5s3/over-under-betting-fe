@@ -26,6 +26,11 @@ export class ETHProvider {
         const chainId = (await this.provider.getNetwork()).chainId;
         return chainId;
     }
+
+    async getMinedTransaction(txn_hash) {
+        const mined_txn = await this.provider.waitForTransaction(txn_hash);
+        return mined_txn;
+    }
 }
 
 
@@ -45,6 +50,18 @@ export class ContractInterface {
         return etherFormattedPriceMark;
     }
 
+    async getOverBettingPayoutModifier() {  
+        const overBettingPayoutModifier = await this.contract_handle.getOverBettingPayoutModifier();
+        const etherFormattedOverBettingPayoutModifier = ethers.utils.formatEther(overBettingPayoutModifier);
+        return etherFormattedOverBettingPayoutModifier;
+    }
+
+    async getUnderBettingPayoutModifier() {
+        const underBettingPayoutModifier = await this.contract_handle.getUnderBettingPayoutModifier();
+        const etherFormattedUnderBettingPayoutModifier = ethers.utils.formatEther(underBettingPayoutModifier);
+        return etherFormattedUnderBettingPayoutModifier;
+    }
+    
     async getAssetSymbol() {
         const assetSymbol = await this.contract_handle.getAssetSymbol();
         return assetSymbol;
