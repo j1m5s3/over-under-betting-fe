@@ -30,3 +30,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Random cores from vscode
+core.*

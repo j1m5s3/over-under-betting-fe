@@ -50,6 +50,12 @@ export class ContractInterface {
         return etherFormattedPriceMark;
     }
 
+    async getPriceAtClose() {
+        const priceAtClose = await this.contract_handle.getPriceAtClose();
+        const etherFormattedPriceAtClose = ethers.utils.formatEther(priceAtClose);
+        return etherFormattedPriceAtClose;
+    }
+
     async getOverBettingPayoutModifier() {  
         const overBettingPayoutModifier = await this.contract_handle.getOverBettingPayoutModifier();
         const etherFormattedOverBettingPayoutModifier = ethers.utils.formatEther(overBettingPayoutModifier);
@@ -87,20 +93,61 @@ export class ContractInterface {
         return winningBettersAddresse;
     }
 
+    async getAddressPayoutComplete(address) {
+        const addressPayoutComplete = await this.contract_handle.getAddressPayoutComplete(address);
+        return addressPayoutComplete;
+    }
+
+    async getWinningOutcome() {
+        const winningOutcome = await this.contract_handle.getWinningOutcome();
+        return winningOutcome;
+    }
+
+    async getWithdrawBalance(address) {
+        const withdrawBalance = await this.contract_handle.getWithdrawBalance(address);
+        const etherFormattedWithdrawBalance = ethers.utils.formatEther(withdrawBalance);
+        return etherFormattedWithdrawBalance;
+    }
+
     async makeUnderBet(value, gas_price) {
         // TODO: Programatically get gas_limit. Optimize gas price estimation
-        const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 6000000});
-        return txn_response;
+        try {
+            const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 6000000});
+            return txn_response;
+        }
+        catch (error) {
+            console.log(error);
+            return null;
+        }
+        //const txn_response = await this.contract_handle.betUnder({ value: value, gasPrice: gas_price, gasLimit: 6000000});
+        //return txn_response;
     }
 
     async makeOverBet(value, gas_price) {
         // TODO: Programatically get gas_limit. Optimize gas price estimation
-        const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 6000000});
-        return txn_response;
+        try {
+            const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 6000000});
+            return txn_response;
+        }
+        catch (error) {
+            console.log(error);
+            return null;
+        }
+       //const txn_response = await this.contract_handle.betOver({ value: value, gasPrice: gas_price, gasLimit: 6000000});
+        //return txn_response;
     }
 
     async winnerWithdrawFunds(gas_price) {
-        const txn_response = await this.contract_handle.winnerWithdrawFunds({ gasPrice: gas_price, gasLimit: 6000000});
-        return txn_response;
+        try {
+            const txn_response = await this.contract_handle.winnerWithdrawFunds({ gasPrice: gas_price, gasLimit: 6000000});
+            return txn_response;
+        }
+        catch (error) {
+            console.log(error);
+            return null;
+        }
+        //const txn_response = await this.contract_handle.winnerWithdrawFunds({ gasPrice: gas_price, gasLimit: 6000000});
+        
+        //return txn_response;
     }
 }

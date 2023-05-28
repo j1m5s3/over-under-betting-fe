@@ -6,7 +6,6 @@ import { Inter } from 'next/font/google'
 
 import HomeComponent from '@/components/HomeComponent'
 import Markets from '@/components/Markets'
-import UserDashboard from '@/components/UserDashboard'
 import Docs from '@/components/Docs'
 
 
@@ -15,10 +14,16 @@ import {
   get_current_six_hour_event_data,
   get_current_test_event_data 
 } from '@/utils/api_calls/over_under_api_calls'
+import { ETHProvider} from '@/utils/eth/ethereum_provider';
 
 const inter = Inter({ subsets: ['latin'] })
 
 const ConnectWalletButton = dynamic(() => import('@/components/ConnectWalletButton'), {
+  loading: () => <p>Loading...</p>,
+  ssr: false
+});
+
+const UserDashboard = dynamic(() => import('@/components/UserDashboard'), {
   loading: () => <p>Loading...</p>,
   ssr: false
 });
@@ -28,6 +33,8 @@ const Home = ({ server_data }) => {
   const eth_data = server_data['eth'];
   const contract_data = server_data['events'];
   const provider_url = server_data['provider_url'];
+
+  const eth_provider = new ETHProvider(provider_url);
 
   const [btnSelection, setBtnSelection] = useState('home');
 
@@ -79,9 +86,9 @@ const Home = ({ server_data }) => {
         </div>
 
         <div className="container-fluid m-auto">
-          {btnSelection == 'home' && <HomeComponent server_data={server_data} />}
+          {btnSelection == 'home' && <HomeComponent server_data={server_data} eth_provider={eth_provider} />}
           {btnSelection == 'markets' && <Markets />}
-          {btnSelection == 'dashboard' && <UserDashboard />}
+          {btnSelection == 'dashboard' && <UserDashboard eth_provider={eth_provider} />}
           {btnSelection == 'docs' && <Docs />}
         </div>
 
@@ -109,22 +116,45 @@ const Home = ({ server_data }) => {
 
 // For now just get data for charts
 export const getServerSideProps = async () => {
+  var btc_price_error = false;
+  var eth_price_error = false;
+  var contract_data_error = false;
+  const provider_url = process.env.NEXT_SEPOLIA_URL;
+
   var price_data = await get_all_hourly_price_data(24);
+
   var contract_data;
-  
   if (process.env.NEXT_PUBLIC_ENV == 'development') {
     contract_data = await get_current_test_event_data();
   }
   else {
     contract_data = await get_current_six_hour_event_data();
   }
+
+  if (price_data.btc.length == 0) {
+    btc_price_error = true;
+  }
+  if (price_data.eth.length == 0) {
+    eth_price_error = true;
+  }
+  if (Object.keys(contract_data).length == 0) {
+    contract_data_error = true;
+  }
   
-  const provider_url = process.env.NEXT_SEPOLIA_URL;
 
   const server_data = {
-    btc: price_data.btc,
-    eth: price_data.eth,
-    events: contract_data,
+    btc: {
+      data: price_data.btc, 
+      error: btc_price_error
+    },
+    eth: {
+      data: price_data.eth, 
+      error: eth_price_error
+    },
+    events: {
+      data: contract_data, 
+      error: contract_data_error
+    },
     provider_url: provider_url
   }
 

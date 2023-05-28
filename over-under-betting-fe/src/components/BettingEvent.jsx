@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import { get_wallet, get_signer } from '@/utils/eth/wallet_utils';
@@ -8,50 +8,34 @@ import useStore from '@/state/zustand_store'
 import { useGetFromStore } from '@/hooks/wallet';
 
 import { convert_timestamp, create_counter_elements } from '@/utils/time_utils/time_utils';
-import { set } from 'date-fns';
 
 
-const BettingEvent = ({ contract_details, eth_provider }) => {
+const BettingEvent = ({ contract_details, eth_provider, show_withdraw }) => {
   const [error, setError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  try {
-    if (!error) {
-      var price_mark = contract_details.price_mark.toFixed(2);
-      var contract_asset_symbol = contract_details.asset_symbol;
-      var event_close = contract_details.event_close;
-      var betting_close = contract_details.betting_close;
-      var contract_address = contract_details.contract_address;
-      var contract_abi = contract_details.contract_abi;
-      var min_bet_value = '0.0011';
-      var [betValue, setBetValue] = useState(min_bet_value);
-      var [bettingTimeRemaining, setBettingTimeRemaining] = useState(null);
-      var [eventTimeRemaining, setEventTimeRemaining] = useState(null);
-      var [betDisabled, setBetDisabled] = useState(false);
 
-      //const isConnected = useSelector((state) => state.wallet.isConnected);
-      //const walletAddress = useSelector((state) => state.wallet.address);
-      //const signer = useSelector((state) => state.signer);
-      var isConnected = useStore((state) => state.isConnected);
-      var walletAddress = useStore((state) => state.address);
-      var connectWallet = useStore((state) => state.connectWallet);
+  const min_bet_value = '0.0011';
+  const [betValue, setBetValue] = useState(min_bet_value);
+  const [bettingTimeRemaining, setBettingTimeRemaining] = useState(null);
+  const [eventTimeRemaining, setEventTimeRemaining] = useState(null);
+  const [betDisabled, setBetDisabled] = useState(false);
 
-      var [overBetterPayoutModifier, setOverBetterPayoutModifier] = useState();
-      var [underBetterPayoutModifier, setUnderBetterPayoutModifier] = useState();
-      var [modifiersLoaded, setModifiersLoaded] = useState(false);
-    }
-  }
-  catch (err) {
-    console.log("error: " + err);
-    setError(true);
-  }
-  
-  if (error) {
-    return (
-      <div className="error">
-        <h3>Something went wrong. Please try again.</h3>
-      </div>
-    );
-  }
+  const isConnected = useStore((state) => state.isConnected);
+  const walletAddress = useStore((state) => state.address);
+  const connectWallet = useStore((state) => state.connectWallet);
+
+  const [overBetterPayoutModifier, setOverBetterPayoutModifier] = useState();
+  const [underBetterPayoutModifier, setUnderBetterPayoutModifier] = useState();
+  const [modifiersLoaded, setModifiersLoaded] = useState(false);
+
+  var price_mark = contract_details.price_mark.toFixed(2);
+  var contract_asset_symbol = contract_details.asset_symbol;
+  var event_close = contract_details.event_close;
+  var betting_close = contract_details.betting_close;
+  var contract_address = contract_details.contract_address;
+  var contract_abi = contract_details.contract_abi;
+
+
 
   //const [isWinner, setIsWinner] = useState(false);
   useEffect(() => {
@@ -127,12 +111,13 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
 
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeOverBet(value_to_send, gas_price);
-      const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
-      console.log("txn_response: ", txn_response);
-      console.log("mined_txn: ", mined_txn);
-      //dispatch(connectWallet({ provider_name, signer, address }));
-      overBetterPayoutModifierUpdate();
-      underBetterPayoutModifierUpdate();
+      if (txn_response != null) {
+        const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
+        console.log("txn_response: ", txn_response);
+        console.log("mined_txn: ", mined_txn);
+        overBetterPayoutModifierUpdate();
+        underBetterPayoutModifierUpdate();
+      };
     }
     if (isConnected) {
       const signer = get_signer(window.ethereum);
@@ -141,11 +126,13 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
 
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeOverBet(value_to_send, gas_price);
-      const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
-      console.log("txn_response: ", txn_response);
-      console.log("mined_txn: ", mined_txn);
-      overBetterPayoutModifierUpdate();
-      underBetterPayoutModifierUpdate();
+      if (txn_response != null) {
+        const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
+        console.log("txn_response: ", txn_response);
+        console.log("mined_txn: ", mined_txn);
+        overBetterPayoutModifierUpdate();
+        underBetterPayoutModifierUpdate();
+      }
     }
   }
 
@@ -171,11 +158,13 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
 
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeUnderBet(value_to_send, gas_price);
-      const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
-      console.log("txn_response: ", txn_response);
-      console.log("mined_txn: ", mined_txn);
-      overBetterPayoutModifierUpdate();
-      underBetterPayoutModifierUpdate();
+      if (txn_response != null) {
+        const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
+        console.log("txn_response: ", txn_response);
+        console.log("mined_txn: ", mined_txn);
+        overBetterPayoutModifierUpdate();
+        underBetterPayoutModifierUpdate();
+      }
     }
     if (isConnected) {
       const signer = get_signer(window.ethereum);
@@ -184,11 +173,13 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
 
       const value_to_send = ethers.utils.parseEther(betValue)
       const txn_response = await contractInterface.makeUnderBet(value_to_send, gas_price);
-      const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
-      console.log("txn_response: ", txn_response);
-      console.log("mined_txn: ", mined_txn);
-      overBetterPayoutModifierUpdate();
-      underBetterPayoutModifierUpdate();
+      if (txn_response != null) {
+        const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
+        console.log("txn_response: ", txn_response);
+        console.log("mined_txn: ", mined_txn);
+        overBetterPayoutModifierUpdate();
+        underBetterPayoutModifierUpdate();
+      }
     }
   }
 
@@ -210,10 +201,19 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       //dispatch(connectWallet({ provider_name, signer, address }));
       connectWallet(provider_name, address);
 
+      const contractHandle = eth_provider.getContract(contract_address, contract_abi, signer);
+      const contractInterface = new ContractInterface(contractHandle);
+
       const txn_response = await contractInterface.winnerWithdrawFunds(gas_price);
+      const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
     }
     if (isConnected) {
+      const signer = get_signer(window.ethereum);
+      const contractHandle = eth_provider.getContract(contract_address, contract_abi, signer);
+      const contractInterface = new ContractInterface(contractHandle);
+
       const txn_response = await contractInterface.winnerWithdrawFunds(gas_price);
+      const mined_txn = await eth_provider.getMinedTransaction(txn_response.hash);
     }
   }
 
@@ -233,26 +233,41 @@ const BettingEvent = ({ contract_details, eth_provider }) => {
       </div>
 
       <div>
-        <label className="form-label mb-0 mt-3 me-3"><h6> PLACE YOUR BET </h6></label>
-        <input className='event-bet-input-field' type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} placeholder={min_bet_value + ' min ETH Bet'} />
-        <label className="form-label mb-0 mt-3 ms-2">ETH </label>
+        {!show_withdraw &&
+          <div>
+            <label className="form-label mb-0 mt-3 me-3"><h6> PLACE YOUR BET </h6></label>
+            <input className='event-bet-input-field' type="text" value={betValue} onChange={(e) => setBetValue(e.target.value)} placeholder={min_bet_value + ' min ETH Bet'} />
+            <label className="form-label mb-0 mt-3 ms-2">ETH </label>
+          </div>
+        }
+
       </div>
 
-
-      <div className="row m-auto mt-2 mb-2">
-        <div className='col m-auto'>
-          <button disabled={betDisabled} onClick={handleOverBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
-            <p className='m-auto'>Over + </p>
-            <p className='m-auto'>Payout: {overBetterPayoutModifier}x </p>
-          </button>
+      {!show_withdraw &&
+        <div className="row m-auto mt-2 mb-2">
+          <div className='col m-auto'>
+            <button disabled={betDisabled} onClick={handleOverBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
+              <p className='m-auto'>Over + </p>
+              <p className='m-auto'>Payout: {overBetterPayoutModifier}x </p>
+            </button>
+          </div>
+          <div className='col m-auto'>
+            <button disabled={betDisabled} onClick={handleUnderBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
+              <p className='m-auto'>Under - </p>
+              <p className='m-auto'>Payout: {underBetterPayoutModifier}x </p>
+            </button>
+          </div>
         </div>
-        <div className='col m-auto'>
-          <button disabled={betDisabled} onClick={handleUnderBet} className="event-bet-btn text-nowrap text-center btn btn-dark">
-            <p className='m-auto'>Under - </p>
-            <p className='m-auto'>Payout: {underBetterPayoutModifier}x </p>
-          </button>
+      }
+      {show_withdraw &&
+        <div className="row m-auto mt-2 mb-2">
+          <div className='col m-auto'>
+            <button onClick={handleWithdraw} className="event-bet-btn text-nowrap text-center btn btn-dark">
+              <p className='m-auto'>Withdraw </p>
+            </button>
+          </div>
         </div>
-      </div>
+      }
     </>
   )
 }

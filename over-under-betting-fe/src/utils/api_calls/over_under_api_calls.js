@@ -112,3 +112,19 @@ export const get_current_test_event_data = async() => {
 
   return contract_data_formatted;
 }
+
+export const get_payout_ready_events_for_wallet = async (wallet_address) => {
+  const base_url = process.env.NEXT_PUBLIC_BE_URL;
+  const withdraw_route = '/events/withdraw/' + wallet_address;
+  const withdraw_url = base_url + withdraw_route;
+
+  const events_data = await fetch(withdraw_url).then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not OK');
+    }
+    return response.json();
+  });
+  const payout_ready_events = events_data.data;
+
+  return payout_ready_events;
+}

@@ -8,6 +8,13 @@ export function map_chart_record_data(data) {
         chart_price.push(value.price);
         chart_time.push(timestamp)
     });
+    
 
-    return { price: chart_price, time: chart_time };
+    if (chart_price.length > 0 && chart_time.length > 0) {
+        return { price: chart_price, time: chart_time };
+    }
+    else {
+        throw new Error('No chart data');
+    }
+
 }
